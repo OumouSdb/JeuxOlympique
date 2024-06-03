@@ -1,0 +1,13 @@
+<h1 *ngIf="country1">Country {{country1.country}} </h1>
+<div class="container">
+    <app-total-number [count]="somme"></app-total-number>
+    <app-total-number [count]="numAthlete"></app-total-number>
+    <app-total-number [count]="totalEntries"></app-total-number>
+</div>
+
+
+<div>
+    <canvas id="barchart"></canvas>
+</div>
+
+<button (click)="back()">Back</button>

@@ -1,0 +1,12 @@
+<h2>Olympic games app</h2>
+<hr />
+<p>{{ (olympics$ | async)?.length }} data loaded</p>
+
+
+<div *ngFor="let o of  countries">
+    <a routerLink="details/{{o.id}}">Country: {{o.country}} </a>
+</div>
+
+<div>
+    <canvas id="piechart" style="height:400px"></canvas>
+</div>
