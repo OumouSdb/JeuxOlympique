@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { Participation } from '../models/Participation';
 import { Country } from '../models/Olympic';
 
@@ -10,18 +10,17 @@ import { Country } from '../models/Olympic';
 })
 export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
-  private olympics$ = new BehaviorSubject<any>(undefined);
-
+  private olympics$ = new BehaviorSubject<Country[]>([]);
   constructor(private http: HttpClient) { }
 
-  loadInitialData() {
-    return this.http.get<Participation[]>(this.olympicUrl).pipe(
+  loadInitialData() { // corriger
+    return this.http.get<Country[]>(this.olympicUrl).pipe(
       tap((value) => this.olympics$.next(value)),
       catchError((error, caught) => {
         // TODO: improve error handling
         console.error(error);
         // can be useful to end loading state and let the user know something went wrong
-        this.olympics$.next(null);
+        this.olympics$.next([]);
         return caught;
       })
     );
@@ -31,19 +30,12 @@ export class OlympicService {
     return this.olympics$.asObservable();
   }
 
-  // getCountryById(id: number): Observable<Country> {
-  //   const url = `${this.olympicUrl}/${id}`;
-  //   return this.http.get<Country>(url);
-  // }
-
   getCountryById(id: number): Observable<Country | undefined> {
     return this.http.get<Country[]>(this.olympicUrl).pipe(
       map(countries => countries.find(country => country.id === id)),
       catchError(this.handleError<Country | undefined>('getCountryById'))
     );
   }
-
-
 
   getOlympicsById(id: number): Observable<Participation | undefined> {
     return this.http.get<Country[]>(this.olympicUrl).pipe(

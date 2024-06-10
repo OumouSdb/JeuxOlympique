@@ -7,8 +7,6 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables)
 import { Location } from '@angular/common';
 
-
-
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
@@ -18,14 +16,14 @@ export class DetailsComponent {
 
   participations!: Participation[];
   countries!: Country[];
-  country1!: Country;
+  country!: Country;
   labeldata: number[] = [];
   realdata: number[] = [];
   colordata: string[] = [];
   somme = 0;
   numAthlete = 0;
   totalEntries = 0;
-
+  @Input() preStyles: { [key: string]: string | number } = {};
 
   constructor(private route: ActivatedRoute, private olympicService: OlympicService, private location: Location) { }
 
@@ -35,12 +33,13 @@ export class DetailsComponent {
 
   }
 
+
   getCountryParticipations(id: number) {
 
-    this.olympicService.getCountryById(id).subscribe(country => {
-      if (country) {
-        this.country1 = country;
-        this.participations = country.participations;
+    this.olympicService.getCountryById(id).subscribe(c => {
+      if (c) {
+        this.country = c;
+        this.participations = c.participations;
         if (this.participations != null) {
           this.participations.map(p => {
             this.labeldata.push(p.year)

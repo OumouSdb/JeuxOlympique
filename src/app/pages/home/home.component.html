@@ -1,8 +1,25 @@
-<h2>Olympic games app</h2>
+<h1>Olympic games app</h1>
 <hr />
-<p>{{ (olympics$ | async)?.length }} data loaded</p>
+
+<!-- <app-total-number [count]="(olympics$ | async)?.length"></app-total-number>
+<app-total-number [count]="t"></app-total-number> -->
 
 
-<div>
+
+
+<div class="container">
+    <app-total-number [count]=" (olympics$ | async)?.length ?? 0">
+
+        <p>Number of JOs</p>
+    </app-total-number>
+    <app-total-number [count]=" numOfJoS">
+
+        <p>Number of entries</p>
+    </app-total-number>
+</div>
+
+
+
+<div id="piechart-container">
     <canvas id="piechart"></canvas>
 </div>

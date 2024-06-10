@@ -9,5 +9,6 @@ export class TotalNumberComponent {
 
 
   @Input() count: number = 0;
-  //@Input() txt: string = "";
+  @Input() preStyles: { [key: string]: string | number } = {};
+  @Input() txt: string = "";
 }

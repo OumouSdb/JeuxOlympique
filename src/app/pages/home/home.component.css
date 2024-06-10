@@ -1,3 +1,75 @@
-canvas {
-    width: 500px;
+div canvas {
+    display: block;
+    box-sizing: border-box;
+    width: 50%;
+    height: 50%;
+}
+
+/* Styles par défaut pour le conteneur */
+.container {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Centrer les éléments horizontalement */
+    align-items: center;
+    /* Centrer les éléments verticalement */
+}
+
+/* Styles pour les éléments enfants du conteneur */
+.container app-total-number {
+    width: 30%;
+    margin: 10px;
+    /* Ajouter une marge autour des éléments */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    /* Inclure les bordures et les paddings dans la largeur */
+    border: 2px solid #0276aa;
+    /* Exemple de bordure */
+
+    /* Exemple de bordure */
+    padding: 10px;
+    /* Espacement interne */
+    border-radius: 10px;
+}
+
+/* Styles pour l'en-tête */
+h1 {
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+    /* Centrer horizontalement */
+}
+
+#piechart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#piechart {
+    max-width: 100%;
+    height: 400px;
+    /* ou toute autre valeur selon vos besoins */
+}
+
+/* Media query pour les petits écrans (comme les smartphones) */
+@media (max-width: 600px) {
+    .container {
+        display: block;
+        /* Afficher les éléments en mode bloc */
+    }
+
+    .container app-total-number {
+        width: 100%;
+        /* Chaque élément prend toute la largeur */
+        margin: 10px 0;
+        /* Ajouter une marge verticale */
+    }
+
+
 }
