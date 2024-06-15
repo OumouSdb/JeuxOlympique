@@ -14,7 +14,6 @@ Chart.register(...registerables)
 
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  //public olympics$: Observable<Country> = of([]);// corriger
   private olympicsSubject = new BehaviorSubject<Country[]>([]);
   public olympics$: Observable<Country[]> = this.olympicsSubject.asObservable();
   totalOfCountries!: Observable<Country[]>;
