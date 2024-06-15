@@ -13,7 +13,7 @@ Chart.register(...registerables)
   styleUrls: ['./home.component.css'],
 
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   //public olympics$: Observable<Country> = of([]);// corriger
   private olympicsSubject = new BehaviorSubject<Country[]>([]);
   public olympics$: Observable<Country[]> = this.olympicsSubject.asObservable();
@@ -23,9 +23,10 @@ export class HomeComponent implements OnInit {
   country?: Country;
   labeldata: String[] = [];
   realdata: number[] = [];
-  colordata: String[] = [];
-  numOfJoS!: number;
-
+  colordata: string[] = [];
+  numOfJoS: Set<number> = new Set();
+  private chart: Chart<any, any, any> | undefined;
+  showChart: boolean = true;
 
   constructor(private olympicService: OlympicService, private router: Router) { }
 
@@ -33,10 +34,13 @@ export class HomeComponent implements OnInit {
     //this.totalOfCountries = this.olympicService.getAllCountries()
     this.olympics$ = this.olympicService.getOlympics();
     this.getAllcountries()
-
   }
 
-
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy()
+    }
+  }
 
   getAllcountries() {
     this.olympicService.getOlympics().subscribe(result => {
@@ -47,17 +51,12 @@ export class HomeComponent implements OnInit {
           this.colordata.push(this.getRandomColor())
           this.olympicService.getCountryById(c.id).subscribe(r => {
             this.country = r;
-
             let somme = 0;
             this.country?.participations.forEach(e => {
-              this.numOfJoS++;
-
-
+              this.numOfJoS.add(e.year)
               somme += e.medalsCount
             })
-
             this.realdata.push(somme)
-
           })
         })
         this.RenderChart(this.labeldata, this.realdata, this.colordata)
@@ -74,36 +73,44 @@ export class HomeComponent implements OnInit {
     return color;
   }
 
-  RenderChart(labeldata: String[], valueData: number[], colordata: any) {
+  RenderChart(labeldata: String[], valueData: number[], colordata: string[]) {
+    this.showChart = true; // Cache le composant du graphique
 
-
-    const myChar = new Chart('piechart', {
-      type: 'pie',
-      data: {
-        labels: labeldata,
-        datasets: [
-          {
-            label: '',
-            data: valueData,
-            backgroundColor: colordata,
-
-          }
-        ],
-
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        onClick: (event, elements) => {
-          if (elements.length > 0) {
-            const index = elements[0].index;
-            const country = this.countries[index];
-            this.router.navigate([`/details/${country.id}`]);
-          }
-        }
-
+    setTimeout(() => { // Utilise setTimeout pour attendre le prochain tick pour sèchement détruire le graphique
+      if (this.chart) {
+        this.chart.destroy();
       }
-    })
+      this.showChart = true; // Affiche à nouveau le composant du graphique
+
+      // Vérifiez si l'élément 'piechart' existe avant de créer le graphique
+      const canvasElement = document.getElementById('piechart');
+      if (canvasElement) {
+        this.chart = new Chart('piechart', {
+          type: 'pie',
+          data: {
+            labels: labeldata,
+            datasets: [
+              {
+                label: '',
+                data: valueData,
+                backgroundColor: colordata,
+              }
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (event, elements) => {
+              if (elements.length > 0) {
+                const index = elements[0].index;
+                const country = this.countries[index];
+                this.router.navigate([`/details/${country.id}`]);
+              }
+            }
+          }
+        });
+      }
+    }, 0);
   }
 
 

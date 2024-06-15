@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
-import { OlympicService } from '../core/services/olympic.service';
-import { Participation } from '../core/models/Participation';
-import { Country } from '../core/models/Olympic';
+import { OlympicService } from '../../core/services/olympic.service';
+import { Participation } from '../../core/models/Participation';
+import { Country } from '../../core/models/Olympic';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables)
 import { Location } from '@angular/common';
@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
   templateUrl: './details.component.html',
   styleUrl: './details.component.css'
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit, OnDestroy {
 
   participations!: Participation[];
   countries!: Country[];
@@ -23,9 +23,16 @@ export class DetailsComponent {
   somme = 0;
   numAthlete = 0;
   totalEntries = 0;
+  private chart: Chart | undefined;
   @Input() preStyles: { [key: string]: string | number } = {};
 
   constructor(private route: ActivatedRoute, private olympicService: OlympicService, private location: Location) { }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy()
+    }
+  }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.params['id']);
