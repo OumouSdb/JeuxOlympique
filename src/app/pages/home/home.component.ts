@@ -110,7 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           }
         });
       }
-    }, 0);
+    }, 500);
   }
 
 
