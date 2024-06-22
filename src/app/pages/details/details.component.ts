@@ -6,6 +6,8 @@ import { Country } from '../../core/models/Olympic';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables)
 import { Location } from '@angular/common';
+import { catchError } from 'rxjs/internal/operators/catchError';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -26,17 +28,18 @@ export class DetailsComponent implements OnInit, OnDestroy {
   realdata: number[] = [];
   // Couleurs pour les barres du graphique
   colordata: string[] = [];
-  // Somme totale des médailles
-  somme = 0;
-  // Nombre total d'athlètes
-  numAthlete = 0;
+  // Somme totale des athletes
+  numOfAthletes = 0;
+  // Nombre total des medailles
+  numOfMedals = 0;
   // Nombre total de participations
   totalEntries = 0;
   // Référence au graphique
   private chart: Chart | undefined;
   // Styles prédéfinis passés en entrée
   @Input() preStyles: { [key: string]: string | number } = {};
-
+  // Affiche les messages d'erreur si non egal à nul
+  error?: string;
   // Constructeur avec injection des services nécessaires
   constructor(private route: ActivatedRoute, private olympicService: OlympicService, private location: Location) { }
 
@@ -65,14 +68,20 @@ export class DetailsComponent implements OnInit, OnDestroy {
             this.labeldata.push(p.year);
             this.realdata.push(p.medalsCount);
             this.colordata.push(this.getRandomColor());
-            this.somme += p.medalsCount; // Calcule la somme totale des médailles
-            this.numAthlete += p.athleteCount; // Calcule le nombre total d'athlètes
+            this.numOfAthletes += p.medalsCount; // Calcule la somme totale des médailles
+            this.numOfMedals += p.athleteCount; // Calcule le nombre total d'athlètes
             this.totalEntries = this.participations.length; // Calcule le nombre total de participations
           });
           this.RenderChart(this.labeldata, this.realdata, this.colordata); // Rend le graphique
         }
       }
-    });
+    },
+      catchError(error => {
+        this.error = 'Une erreur est survenue:' + error;
+        // Affiche l'erreur à l'utilisateur
+        return this.error;
+      })
+    )
   }
 
   // Génère une couleur aléatoire
@@ -86,7 +95,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   // Méthode pour rendre le graphique
-  RenderChart(labeldata: number[], valueData: number[], colordata: any) {
+  RenderChart(labeldata: number[], valueData: number[], colordata: string[]) {
     const myChar = new Chart('barchart', {
       type: 'bar',
       data: {
@@ -100,7 +109,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
         ],
       },
       options: {
-        // Options du graphique
       }
     });
   }

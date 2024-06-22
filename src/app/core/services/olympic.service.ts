@@ -22,7 +22,6 @@ export class OlympicService {
     return this.http.get<Country[]>(this.olympicUrl).pipe(
       tap((value) => this.olympics$.next(value)), // Met à jour les données du sujet
       catchError((error, caught) => {
-        console.error(error); // Log l'erreur dans la console
         this.olympics$.next([]); // Envoie un tableau vide en cas d'erreur
         return of([]); // Retourne un Observable vide pour continuer le flux
       })
@@ -60,7 +59,7 @@ export class OlympicService {
 
   // Gère les erreurs de manière générique
   private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
+    return (error: string): Observable<T> => {
       return of(result as T); // Retourne un résultat vide pour continuer le flux
     };
   }
