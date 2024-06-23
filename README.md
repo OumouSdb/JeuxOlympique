@@ -50,3 +50,4 @@ Point de Suivi: Rencontre finale avec le responsable du projet pour valider et e
 
 ## Conclusion
 Ce README sert de guide pour le développement du front-end du dashboard interactif pour TéléSport. En suivant ces spécifications, nous visons à fournir une page interactive de haute qualité, répondant aux attentes du client et offrant une expérience utilisateur optimale.
+# JeuxOlympique
